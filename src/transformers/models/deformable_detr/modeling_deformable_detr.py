@@ -2117,7 +2117,7 @@ class DeformableDetrLoss(nn.Module):
         if "logits" not in outputs:
             raise KeyError("No logits were found in the outputs")
         source_logits = outputs["logits"]
-
+        print(targets)
         idx = self._get_source_permutation_idx(indices)
         target_classes_o = torch.cat([t["class_labels"][J] for t, (_, J) in zip(targets, indices)])
         target_classes = torch.full(
