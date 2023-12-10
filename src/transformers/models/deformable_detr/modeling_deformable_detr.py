@@ -2070,7 +2070,7 @@ def sigmoid_focal_loss(inputs, targets, num_boxes, alpha: float = 0.25, gamma: f
     Returns:
         Loss tensor
     """
-    print(targets)
+    # print(targets)
     prob = inputs.sigmoid()
     ce_loss = nn.functional.binary_cross_entropy_with_logits(inputs, targets, reduction="none")
     # add modulating factor
