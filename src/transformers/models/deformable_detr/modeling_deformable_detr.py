@@ -2142,6 +2142,7 @@ class DeformableDetrLoss(nn.Module):
         
         #--salience
         salience_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)])
+        print(f"salience: {salience}")
         salience = torch.full(
             source_logits.shape[:2], 2, dtype=torch.int64, device=source_logits.device
         )
