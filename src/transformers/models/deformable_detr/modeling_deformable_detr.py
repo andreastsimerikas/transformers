@@ -2122,6 +2122,7 @@ class DeformableDetrLoss(nn.Module):
         source_logits = outputs["logits"]
         print(targets)
         idx = self._get_source_permutation_idx(indices)
+        #--classes
         target_classes_o = torch.cat([t["class_labels"][J] for t, (_, J) in zip(targets, indices)])
         target_classes = torch.full(
             source_logits.shape[:2], self.num_classes, dtype=torch.int64, device=source_logits.device
@@ -2137,8 +2138,26 @@ class DeformableDetrLoss(nn.Module):
         target_classes_onehot.scatter_(2, target_classes.unsqueeze(-1), 1)
 
         target_classes_onehot = target_classes_onehot[:, :, :-1]
+        
+        #--salience
+        salience_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)])
+        salience = torch.full(
+            source_logits.shape[:2], 2, dtype=torch.int64, device=source_logits.device
+        )
+        salience[idx] = salience_o
+
+        salience_onehot = torch.zeros(
+            [source_logits.shape[0], source_logits.shape[1], source_logits.shape[2] + 1],
+            dtype=source_logits.dtype,
+            layout=source_logits.layout,
+            device=source_logits.device,
+        )
+        salience_onehot.scatter_(2, salience.unsqueeze(-1), 1)
+
+        salience_onehot = salience_onehot[:, :, :-1]
+        
         loss_ce = (
-            sigmoid_focal_loss(source_logits, target_classes_onehot, num_boxes, alpha=self.focal_alpha, gamma=2)
+            sigmoid_focal_loss(source_logits, target_classes_onehot, salience_onehot, num_boxes, alpha=self.focal_alpha, gamma=2)
             * source_logits.shape[1]
         )
         losses = {"loss_ce": loss_ce}
