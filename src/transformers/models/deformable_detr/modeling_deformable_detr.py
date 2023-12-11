@@ -2145,17 +2145,21 @@ class DeformableDetrLoss(nn.Module):
             source_logits.shape[:2], 2, dtype=torch.int64, device=source_logits.device
         )
         salience[idx] = salience_o
-
+        print(f"salience: {salience}")
+        
         salience_onehot = torch.zeros(
             [source_logits.shape[0], source_logits.shape[1], source_logits.shape[2] + 1],
             dtype=source_logits.dtype,
             layout=source_logits.layout,
             device=source_logits.device,
         )
-        salience_onehot.scatter_(2, salience.unsqueeze(-1), 1)
-
-        salience_onehot = salience_onehot[:, :, :-1]
+        print(f"salience_onehot: {salience_onehot}")
         
+        salience_onehot.scatter_(2, salience.unsqueeze(-1), 1)
+        print(f"salience_onehotscatter: {salience_onehot}")
+        
+        salience_onehot = salience_onehot[:, :, :-1]
+        print(f"salience_onehotfinal: {salience_onehot}")
         loss_ce = (
             sigmoid_focal_loss(source_logits, target_classes_onehot, salience_onehot, num_boxes, alpha=self.focal_alpha, gamma=2)
             * source_logits.shape[1]
