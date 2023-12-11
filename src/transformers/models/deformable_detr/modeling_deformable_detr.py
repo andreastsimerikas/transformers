@@ -2124,6 +2124,7 @@ class DeformableDetrLoss(nn.Module):
         source_logits = outputs["logits"]
         print(targets)
         idx = self._get_source_permutation_idx(indices)
+        print(f"idx : {idx }")
         #--classes
         target_classes_o = torch.cat([t["class_labels"][J] for t, (_, J) in zip(targets, indices)])
         target_classes = torch.full(
