@@ -2076,6 +2076,7 @@ def sigmoid_focal_loss(inputs, targets, salience, num_boxes, alpha: float = 0.25
     
     prob = inputs.sigmoid()
     ce_loss = nn.functional.binary_cross_entropy_with_logits(inputs, targets, reduction="none")
+    print(f"ce_loss: {ce_loss}")
     # add modulating factor
     p_t = prob * targets + (1 - prob) * (1 - targets)
     loss = ce_loss * ((1 - p_t) ** gamma)
