@@ -2139,8 +2139,9 @@ class DeformableDetrLoss(nn.Module):
             device=source_logits.device,
         )
         target_classes_onehot.scatter_(2, target_classes.unsqueeze(-1), 1)
-
+        print(f"target_classes_onehoscattert: {target_classes_onehot}")
         target_classes_onehot = target_classes_onehot[:, :, :-1]
+        print(f"target_classes_onehot: {target_classes_onehot}")
         
         #--salience
         salience_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)])
@@ -2150,7 +2151,7 @@ class DeformableDetrLoss(nn.Module):
         )
         print(f"salience: {salience}")
         salience[idx] = salience_o
-        print(f"salience: {salience}")
+        print(f"salienceafteridx: {salience}")
         
         salience_onehot = torch.zeros(
             [source_logits.shape[0], source_logits.shape[1], source_logits.shape[2] + 1],
@@ -2158,7 +2159,6 @@ class DeformableDetrLoss(nn.Module):
             layout=source_logits.layout,
             device=source_logits.device,
         )
-        print(f"salience_onehot: {salience_onehot}")
         
         salience_onehot.scatter_(2, salience.unsqueeze(-1), 1)
         print(f"salience_onehotscatter: {salience_onehot}")
