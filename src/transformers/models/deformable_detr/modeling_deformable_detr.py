@@ -2149,7 +2149,7 @@ class DeformableDetrLoss(nn.Module):
         idx_sal = idx + (salience_o,)
         print(f"idx_sal : {idx_sal }")
         salience_onehot = target_classes_onehot
-        salience_onehot[idx_sal] = salience_o.to(source_logits.dtype)
+        salience_onehot[idx_sal] = salience_o.to(target_classes_onehot.dtype)
         print(f"salience_onehot : {salience_onehot }")
         # salience = torch.full(
         #     source_logits.shape[:2], self.num_classes, dtype=torch.int64, device=source_logits.device
