@@ -2144,7 +2144,7 @@ class DeformableDetrLoss(nn.Module):
         print(f"target_classes_onehot: {target_classes_onehot}")
         
         #--salience
-        salience_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)], dtype=source_logits.dtype))
+        salience_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)], dtype=source_logits.dtype)
         print(f"salience_o : {salience_o }")
         idx_sel = self._get_source_permutation_idx(indices), salience_o
         print(f"idx_sel : {idx_sel }")
