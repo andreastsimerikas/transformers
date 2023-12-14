@@ -2131,7 +2131,6 @@ class DeformableDetrLoss(nn.Module):
             source_logits.shape[:2], self.num_classes, dtype=torch.int64, device=source_logits.device
         )
         target_classes[idx] = target_classes_o
-
         target_classes_onehot = torch.zeros(
             [source_logits.shape[0], source_logits.shape[1], source_logits.shape[2] + 1],
             dtype=source_logits.dtype,
@@ -2139,37 +2138,18 @@ class DeformableDetrLoss(nn.Module):
             device=source_logits.device,
         )
         target_classes_onehot.scatter_(2, target_classes.unsqueeze(-1), 1)
-        print(f"target_classes_onehoscattert: {target_classes_onehot}")
         target_classes_onehot = target_classes_onehot[:, :, :-1]
         print(f"target_classes_onehot: {target_classes_onehot}")
         
         #--salience
         salience_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)])
         print(f"salience_o : {salience_o }")
-        idx_sal = idx + (salience_o,)
+        idx_sal = idx + (target_classes_o,)
         print(f"idx_sal : {idx_sal }")
         salience_onehot = target_classes_onehot
         salience_onehot[idx_sal] = salience_o.to(target_classes_onehot.dtype)
-        print(f"salience_onehot : {salience_onehot }")
-        # salience = torch.full(
-        #     source_logits.shape[:2], self.num_classes, dtype=torch.int64, device=source_logits.device
-        # )
-        # print(f"salience: {salience}")
-        # salience[idx] = salience_o
-        # print(f"salienceafteridx: {salience}")
+        print(f"salience_onehot : {salience_onehot}")
         
-        # salience_onehot = torch.zeros(
-        #     [source_logits.shape[0], source_logits.shape[1], source_logits.shape[2] + 1],
-        #     dtype=source_logits.dtype,
-        #     layout=source_logits.layout,
-        #     device=source_logits.device,
-        # )
-        
-        # salience_onehot.scatter_(2, salience.unsqueeze(-1), 1)
-        # print(f"salience_onehotscatter: {salience_onehot}")
-        
-        # salience_onehot = salience_onehot[:, :, :-1]
-        # print(f"salience_onehotfinal: {salience_onehot}")
         loss_ce = (
             sigmoid_focal_loss(source_logits, target_classes_onehot, salience_onehot, num_boxes, alpha=self.focal_alpha, gamma=2)
             * source_logits.shape[1]
