@@ -2148,6 +2148,7 @@ class DeformableDetrLoss(nn.Module):
         print(f"idx_sal : {idx_sal }")
         salience_onehot = target_classes_onehot
         salience_onehot[idx_sal] = salience_o.to(target_classes_onehot.dtype)
+        salience_onehot = salience_onehot*4
         print(f"salience_onehot : {salience_onehot}")
         
         loss_ce = (
