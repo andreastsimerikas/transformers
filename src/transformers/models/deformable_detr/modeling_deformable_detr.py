@@ -2146,10 +2146,10 @@ class DeformableDetrLoss(nn.Module):
         #--salience
         salience_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)])
         print(f"salience_o : {salience_o }")
-        idx_sel = self._get_source_permutation_idx(indices), salience_o
-        print(f"idx_sel : {idx_sel }")
+        idx_sal = idx + (salience_o,)
+        print(f"idx_sal : {idx_sal }")
         salience_onehot = target_classes_onehot
-        salience_onehot[idx_sel] = salience_o
+        salience_onehot[idx_sal] = salience_o
         print(f"salience_onehot : {salience_onehot }")
         # salience = torch.full(
         #     source_logits.shape[:2], self.num_classes, dtype=torch.int64, device=source_logits.device
