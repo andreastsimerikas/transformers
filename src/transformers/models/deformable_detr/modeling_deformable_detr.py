@@ -2143,7 +2143,7 @@ class DeformableDetrLoss(nn.Module):
         
         #--salience
         salience_classes_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)])
-        print(f"salience_o : {salience_o }")
+        print(f"salience_classes_o : {salience_classes_o }")
         sal_idx = idx + (target_classes_o,)
         print(f"sal_idx : {sal_idx }")
         salience_onehot = target_classes_onehot
