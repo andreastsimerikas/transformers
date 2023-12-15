@@ -2123,9 +2123,9 @@ class DeformableDetrLoss(nn.Module):
         if "logits" not in outputs:
             raise KeyError("No logits were found in the outputs")
         source_logits = outputs["logits"]
-        print(targets)
+        # print(targets)
         idx = self._get_source_permutation_idx(indices)
-        print(f"idx : {idx }")
+        # print(f"idx : {idx }")
         #--classes
         target_classes_o = torch.cat([t["class_labels"][J] for t, (_, J) in zip(targets, indices)])
         target_classes = torch.full(
@@ -2140,16 +2140,16 @@ class DeformableDetrLoss(nn.Module):
         )
         target_classes_onehot.scatter_(2, target_classes.unsqueeze(-1), 1)
         target_classes_onehot = target_classes_onehot[:, :, :-1]
-        print(f"target_classes_onehot: {target_classes_onehot}")
+        # print(f"target_classes_onehot: {target_classes_onehot}")
         
         #--salience
         salience_classes_o = torch.cat([t["is_salient"][J] for t, (_, J) in zip(targets, indices)])
-        print(f"salience_classes_o : {salience_classes_o }")
+        # print(f"salience_classes_o : {salience_classes_o }")
         sal_idx = idx + (target_classes_o,)
-        print(f"sal_idx : {sal_idx }")
+        # print(f"sal_idx : {sal_idx }")
         salience_onehot = target_classes_onehot
         salience_onehot[sal_idx] = salience_classes_o.to(target_classes_onehot.dtype)
-        print(f"salience_onehot : {salience_onehot*4}")
+        # print(f"salience_onehot : {salience_onehot*4}")
         
         loss_ce = (
             sigmoid_focal_loss(source_logits, target_classes_onehot, salience_onehot, num_boxes, alpha=self.focal_alpha, gamma=2)
