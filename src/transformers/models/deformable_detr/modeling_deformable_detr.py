@@ -2070,23 +2070,23 @@ def sigmoid_focal_loss(inputs, targets, salience, num_boxes, alpha: float = 0.25
     Returns:
         Loss tensor
     """
-    print(f"targets: {targets}")
-    print(f"inputs: {inputs}")
-    print(f"salience: {salience}")
+    # print(f"targets: {targets}")
+    # print(f"inputs: {inputs}")
+    # print(f"salience: {salience}")
     
     prob = inputs.sigmoid()
     ce_loss = nn.functional.binary_cross_entropy_with_logits(inputs, targets, reduction="none")
-    print(f"ce_loss: {ce_loss}")
+    # print(f"ce_loss: {ce_loss}")
     # add modulating factor
     p_t = prob * targets + (1 - prob) * (1 - targets)
     loss = ce_loss * ((1 - p_t) ** gamma)
-    print(f"lossbefore: {loss}")
+    # print(f"lossbefore: {loss}")
     salience_loss = loss * (salience+1*3)
     if alpha >= 0:
         alpha_t = alpha * targets + (1 - alpha) * (1 - targets)
-        print(f"alpha_t: {alpha_t}")
+        # print(f"alpha_t: {alpha_t}")
         loss = alpha_t * salience_loss
-    print(f"salience_loss: {salience_loss}")
+    # print(f"salience_loss: {salience_loss}")
     return salience_loss.mean(1).sum() / num_boxes
 
 
