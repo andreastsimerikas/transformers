@@ -2082,11 +2082,12 @@ def sigmoid_focal_loss(inputs, targets, salience, num_boxes, alpha: float = 0.25
     loss = ce_loss * ((1 - p_t) ** gamma)
     # print(f"lossbefore: {loss}")
     # print(salience*3+1)
-    salience_loss = loss * (salience+1)
+    # salience_loss = loss 
+    a_ss = 2
     if alpha >= 0:
         alpha_t = alpha * targets + (1 - alpha) * (1 - targets)
         # print(f"alpha_t: {alpha_t}")
-        loss = alpha_t * salience_loss
+        loss = alpha_t * (salience+(a_ss-1) * loss
     # print(f"salience_loss: {salience_loss}")
     return salience_loss.mean(1).sum() / num_boxes
 
