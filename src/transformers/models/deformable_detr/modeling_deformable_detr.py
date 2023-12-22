@@ -2089,7 +2089,7 @@ def sigmoid_focal_loss(inputs, targets, salience, num_boxes, alpha: float = 0.25
         # print(f"alpha_t: {alpha_t}")
         loss = alpha_t * (salience+(a_ss-1)) * loss
     # print(f"salience_loss: {salience_loss}")
-    return salience_loss.mean(1).sum() / num_boxes
+    return loss.mean(1).sum() / num_boxes
 
 
 class DeformableDetrLoss(nn.Module):
